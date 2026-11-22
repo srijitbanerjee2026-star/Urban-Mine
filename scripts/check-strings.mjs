@@ -37,17 +37,17 @@ for (const k of ['low','mid','high']) used.add('conf_'+k)
 for (const k of ['top','under','back','label']) used.add('shot_'+k+'_help')
 for (const k of ['normal','large','xlarge']) used.add('text_'+k)
 const missing = [...used].filter((k) => !/[._]$/.test(k) && !defined.has(k))
-const empty = [...strings.matchAll(/'?([A-Za-z_.]+)'?:\s*\[\s*'\s*'|,\s*'\s*'\s*\]/g)]
+const empty = [...strings.matchAll(/'?([A-Za-z0-9_.]+)'?:\s*\[\s*'\s*'|,\s*'\s*'\s*\]/g)]
 
 // Extra languages live in strings.<code>.ts as Record<string, string>. Each must cover every defined key, keep the same {placeholders}, and add no unknown keys.
 const placeholders = (t) => [...t.matchAll(/\{[a-z]+\}/g)].map((m) => m[0]).sort().join(',')
 const enText = {}
-for (const m of strings.matchAll(/^\s*(?:'([A-Za-z_.]+)'|([A-Za-z_]+)):\s*\[\s*(?:'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")/gm)) enText[m[1] ?? m[2]] = m[3] ?? m[4]
+for (const m of strings.matchAll(/^\s*(?:'([A-Za-z0-9_.]+)'|([A-Za-z0-9_]+)):\s*\[\s*(?:'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")/gm)) enText[m[1] ?? m[2]] = m[3] ?? m[4]
 let langProblems = 0
 for (const code of ['bn', 'ta', 'te', 'mr', 'gu']) {
   const text = readFileSync(join(root, `lib/strings.${code}.ts`), 'utf8')
   const have = new Map()
-  for (const m of text.matchAll(/^\s*(?:'([A-Za-z_.]+)'|([A-Za-z_]+)):\s*(?:'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")/gm)) have.set(m[1] ?? m[2], m[3] ?? m[4])
+  for (const m of text.matchAll(/^\s*(?:'([A-Za-z0-9_.]+)'|([A-Za-z0-9_]+)):\s*(?:'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")/gm)) have.set(m[1] ?? m[2], m[3] ?? m[4])
   const lack = [...defined].filter((k) => !have.has(k))
   const extra = [...have.keys()].filter((k) => !defined.has(k))
   const bad = [...have].filter(([k, v]) => !v.trim() || (enText[k] !== undefined && placeholders(v) !== placeholders(enText[k]))).map(([k]) => k)

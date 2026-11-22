@@ -14,7 +14,7 @@ async function setup() {
   const photos = new LocalPhotoStore(dir, 'test-secret');
   await seedDemo(db, new Date(), photos);
   const app = await buildApp(db, { photos, uploadsDir: dir, ocr: { read: async () => '' } });
-  return { app, h: { 'x-user-id': 'u-repairer-1' } };
+  return { app, db, h: { 'x-user-id': 'u-repairer-1' } };
 }
 
 test('repairer dashboard data: history with dates and notes, one job still in progress', async () => {
